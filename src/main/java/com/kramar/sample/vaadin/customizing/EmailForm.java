@@ -21,7 +21,7 @@ public class EmailForm extends Panel {
     @PropertyId("message")
     private TextField message = new TextField("Message");
     @PropertyId("recipients")
-    private StringListField recipients = new StringListField("Recipients");
+    private StringListField2 recipients = new StringListField2("Recipients");
     @PropertyId("date")
     private DateField date = new DateField("Date");
 
@@ -76,12 +76,16 @@ public class EmailForm extends Panel {
         recipients.setConverter(PERSISTENT_BAG_TO_ARRAY_LIST_CONVERTER);
     }
 
+
+    // TODO: 1/8/2019 dont save list recipients correctly!
     private void save(Button.ClickEvent event) {
 
         Email email = emailFieldGroup.getItemDataSource().getBean();
         email.setName(nameTextField.getValue());
         email.setMessage(message.getValue());
         email.setRecipients(recipients.getValue());
+//        email.getRecipients().clear();
+//        email.getRecipients().addAll(recipients.getValue());
         email.setDate(ZonedDateTime.ofInstant(date.getValue().toInstant(), ZoneId.systemDefault()).toLocalDate());
 
         try {
@@ -94,7 +98,7 @@ public class EmailForm extends Panel {
 
     private void cancel(Button.ClickEvent event) {
         emailFieldGroup.discard();
-        onSaveOrDiscard.run();
+        ((Window) this.getParent()).close();
     }
 
     public TextField getNameTextField() {
@@ -113,11 +117,11 @@ public class EmailForm extends Panel {
         this.message = message;
     }
 
-    public StringListField getRecipients() {
+    public StringListField2 getRecipients() {
         return recipients;
     }
 
-    public void setRecipients(StringListField recipients) {
+    public void setRecipients(StringListField2 recipients) {
         this.recipients = recipients;
     }
 
