@@ -1,0 +1,22 @@
+@import "../valo/valo";
+
+@mixin mytheme2 {
+  @include valo;
+
+  .background-yellow {
+    background: yellow;
+  }
+
+  .background-yellowgreen {
+    background: yellowgreen;
+  }
+
+  .background-red {
+    background: red;
+  }
+
+  .background-blue {
+    background: blue;
+  }
+
+}
