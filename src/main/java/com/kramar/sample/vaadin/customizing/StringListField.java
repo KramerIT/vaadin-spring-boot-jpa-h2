@@ -1,14 +1,16 @@
 package com.kramar.sample.vaadin.customizing;
 
 import com.vaadin.ui.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StringListField extends CustomField<List<String>> {
 
-    private VerticalLayout fields;
-    private List<String> value;
+    private VerticalLayout mainVerticalLayout;
+    private Map<Button, HorizontalLayout> textFieldButtonMap;
 
     public StringListField(String caption) {
         setCaption(caption);
@@ -16,77 +18,50 @@ public class StringListField extends CustomField<List<String>> {
 
     @Override
     protected Component initContent() {
-        fields = new VerticalLayout();
-        value = new ArrayList<>();
-        fields.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
+        mainVerticalLayout = new VerticalLayout();
+        textFieldButtonMap = new HashMap<>();
+        mainVerticalLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
+        createInputItem(Strings.EMPTY);
+        return mainVerticalLayout;
+    }
+
+    private void createInputItem(String text) {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         TextField textField = new TextField();
+        textField.setValue(text);
         Button addButton = new Button("+", this::addItem);
         horizontalLayout.addComponents(textField, addButton);
-        fields.addComponent(horizontalLayout);
-
-
-
-//        value.add(Strings.EMPTY);
-
-//        TextField textField = new TextField();
-//        textField.focus();
-//        fields.addComponent(textField);
-//        addEmptyItem();
-//        GridLayout content = new GridLayout(2,1);
-//        content.addComponent(fields);
-
-//        Button addButton = new Button("+", this::addItem);
-//        content.addComponent(addButton);
-//        content.setComponentAlignment(addButton, Alignment.BOTTOM_CENTER);
-//        return content;
-        return fields;
+        horizontalLayout.setComponentAlignment(textField, Alignment.TOP_LEFT);
+        horizontalLayout.setComponentAlignment(addButton, Alignment.TOP_RIGHT);
+        textFieldButtonMap.put(addButton, horizontalLayout);
+        mainVerticalLayout.addComponent(horizontalLayout);
     }
 
     private void addItem(Button.ClickEvent event) {
-//        value.add(Strings.EMPTY);
-
-        TextField textField = new TextField();
-        Button deleteItem = new Button("-", this::deleteItem);
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.addComponents(textField, deleteItem);
-        textField.addValueChangeListener(valueChange -> {
-            int index = fields.getComponentIndex(textField);
-            value.set(index, textField.getValue());
-        });
-        textField.focus();
-        fields.addComponent(textField);
+        Button eventButton = event.getButton();
+        HorizontalLayout horizontalLayout = textFieldButtonMap.get(eventButton);
+        TextField textField = (TextField) horizontalLayout.getComponent(0);
+        if (StringUtils.isNotEmpty(textField.getValue())) {
+            horizontalLayout.removeComponent(eventButton);
+            Button deleteButton = new Button("-", this::deleteItem);
+            horizontalLayout.addComponent(deleteButton);
+            textFieldButtonMap.remove(eventButton);
+            textFieldButtonMap.put(deleteButton, horizontalLayout);
+            createInputItem(Strings.EMPTY);
+        } else {
+            Notification.show("Please, specify recipient! ", Notification.Type.WARNING_MESSAGE);
+        }
     }
 
     private void deleteItem(Button.ClickEvent event) {
-//        value.add(Strings.EMPTY);
-
-        TextField textField = (TextField) event.getButton().getParent().iterator().next();
-        Button addButton = new Button("-", this::addItem);
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.addComponents(textField, addButton);
-        textField.addValueChangeListener(valueChange -> {
-            int index = fields.getComponentIndex(textField);
-            value.remove(index);
-        });
-        textField.focus();
-        fields.addComponent(textField);
-    }
-
-    private void addEmptyItem() {
-//        value.add(Strings.EMPTY);
-
-        TextField textField = new TextField("");
-        textField.addValueChangeListener(valueChange -> {
-            value.add(textField.getValue());
-        });
-        textField.focus();
-        fields.addComponent(textField);
+        Button eventButton = event.getButton();
+        HorizontalLayout horizontalLayout = textFieldButtonMap.get(eventButton);
+        textFieldButtonMap.remove(eventButton);
+        mainVerticalLayout.removeComponent(horizontalLayout);
     }
 
     @Override
     public Class<? extends List<String>> getType() {
-//        return ArrayList<String>.class;
         return (Class<List<String>>) ((List<String>) new ArrayList<String>()).getClass();
 //        return (Class<List<String>>) Arrays.stream(ArrayList.class.getInterfaces())
 //                .filter(a -> a.isAssignableFrom(List.class)).findAny().orElseThrow(RuntimeException::new);
@@ -94,12 +69,19 @@ public class StringListField extends CustomField<List<String>> {
 
     @Override
     public List<String> getValue() {
-        return value;
+        return textFieldButtonMap
+                .keySet()
+                .stream()
+                .map(key -> ((TextField) textFieldButtonMap.get(key).getComponent(0)).getValue())
+                .collect(Collectors.toList());
     }
 
     @Override
     public void setValue(List<String> newFieldValues) {
-        value = newFieldValues;
+        mainVerticalLayout.removeAllComponents();
+        textFieldButtonMap.clear();
+        createInputItem(Strings.EMPTY);
+        newFieldValues.forEach(this::createInputItem);
     }
 
 }

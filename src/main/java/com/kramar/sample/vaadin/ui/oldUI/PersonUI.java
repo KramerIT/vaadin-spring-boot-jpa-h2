@@ -1,12 +1,10 @@
-package com.kramar.sample.vaadin.ui;
+package com.kramar.sample.vaadin.ui.oldUI;
 
 import com.kramar.sample.domain.Person;
 import com.kramar.sample.service.PersonService;
-import com.kramar.sample.vaadin.customizing.StringListField;
-import com.vaadin.annotations.Theme;
+import com.kramar.sample.vaadin.customizing.StringListField_Old;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 import java.util.List;
 
-@Theme("mytheme")
-@SpringUI(path = "/person")
+//@Theme("mytheme")
+//@SpringUI(path = "/person")
 public class PersonUI extends UI{
 
     private VerticalLayout mainVerticalLayout;
@@ -79,7 +77,7 @@ public class PersonUI extends UI{
     }
 
     public void addStringListField() {
-        StringListField stringListField = new StringListField("My custom field");
+        StringListField_Old stringListField = new StringListField_Old("My custom field");
         mainVerticalLayout.addComponent(stringListField);
     }
 

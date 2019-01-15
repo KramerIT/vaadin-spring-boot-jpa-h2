@@ -7,8 +7,6 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.ui.*;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 import static com.kramar.sample.vaadin.converter.LocalDateToDateConverter.LOCAL_DATE_TO_DATE_CONVERTER;
@@ -21,7 +19,7 @@ public class EmailForm extends Panel {
     @PropertyId("message")
     private TextField message = new TextField("Message");
     @PropertyId("recipients")
-    private StringListField2 recipients = new StringListField2("Recipients");
+    private StringListField recipients = new StringListField("Recipients");
     @PropertyId("date")
     private DateField date = new DateField("Date");
 
@@ -77,16 +75,14 @@ public class EmailForm extends Panel {
     }
 
 
-    // TODO: 1/8/2019 dont save list recipients correctly!
+    // TODO: 1/8/2019 don't save list recipients correctly!
     private void save(Button.ClickEvent event) {
 
-        Email email = emailFieldGroup.getItemDataSource().getBean();
-        email.setName(nameTextField.getValue());
-        email.setMessage(message.getValue());
-        email.setRecipients(recipients.getValue());
-//        email.getRecipients().clear();
-//        email.getRecipients().addAll(recipients.getValue());
-        email.setDate(ZonedDateTime.ofInstant(date.getValue().toInstant(), ZoneId.systemDefault()).toLocalDate());
+//        Email email = emailFieldGroup.getItemDataSource().getBean();
+//        email.setName(nameTextField.getValue());
+//        email.setMessage(message.getValue());
+//        email.setRecipients(recipients.getValue());
+//        email.setDate(ZonedDateTime.ofInstant(date.getValue().toInstant(), ZoneId.systemDefault()).toLocalDate());
 
         try {
             emailFieldGroup.commit();
@@ -117,11 +113,11 @@ public class EmailForm extends Panel {
         this.message = message;
     }
 
-    public StringListField2 getRecipients() {
+    public StringListField getRecipients() {
         return recipients;
     }
 
-    public void setRecipients(StringListField2 recipients) {
+    public void setRecipients(StringListField recipients) {
         this.recipients = recipients;
     }
 

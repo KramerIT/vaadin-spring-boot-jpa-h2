@@ -1,12 +1,10 @@
-package com.kramar.sample.vaadin.ui;
+package com.kramar.sample.vaadin.ui.oldUI;
 
 import com.kramar.sample.domain.Email;
 import com.kramar.sample.service.EmailService;
 import com.kramar.sample.vaadin.customizing.EmailForm;
-import com.vaadin.annotations.Theme;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-@Theme("mytheme")
-@SpringUI(path = "/email")
+//@Theme("mytheme")
+//@SpringUI(path = "/email")
 public class EmailUI extends UI{
 
     private VerticalLayout mainVerticalLayout;
